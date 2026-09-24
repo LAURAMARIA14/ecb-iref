@@ -1,0 +1,23 @@
+{
+  "ref_period": "2023-12",
+  "ref_area": "DE",
+  "bs_item": "A20",
+  "internal_granular_count": 1000,
+  "derived_from_granular": 1363388.0,
+  "external_sdmx": {
+    "endpoint": "https://data-api.ecb.europa.eu/service/data/BSI/M.DE.N.A.A20.A.1.DE.1000.Z01.E",
+    "params": "startPeriod=2023-12&endPeriod=2023-12&format=csvdata",
+    "value": 1363388.0
+  },
+  "reconciliation": {
+    "diff": 0.0,
+    "status": "PASS",
+    "bird_plausibility_rule": "40.81 - BSI vs Derived vs External SDMX 2.1"
+  },
+  "idempotency": {
+    "source_hash": "9333a436ff7cd7bc",
+    "idempotency_key": "f26e36808194d152bdeda7acdc3ad30697a2fc321304552d566f28947ea55b4c",
+    "nessie_branch": "dev/2023-12",
+    "nessie_commit": "a1b2c3d4e5f6_2023-12"
+  }
+}

@@ -1,0 +1,2 @@
+execution_id,ref_period,ref_area,idempotency_key,source_hash,nessie_commit,nessie_branch,operator,status,timestamp
+exec_202312_001,2023-12,DE,f26e36808194d152bdeda7acdc3ad30697a2fc321304552d566f28947ea55b4c,9333a436ff7cd7bc,a1b2c3d4e5f6_2023-12,dev/2023-12,portfolio_demo,SUCCESS,2023-12-31T23:59:59Z
