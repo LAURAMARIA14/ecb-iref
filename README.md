@@ -80,3 +80,29 @@ data/
   ADR-004: Why Idempotency? ECB Revision Policy Art 12 - prevent duplicate reporting on Airflow rerun - key: SHA256(ref_area+ref_period+source_hash)
   ADR-005: Why protection_dim? Differentiator top 0.1% - 90% omit collateral but ECB requires it for analytical value + BSI plausability
 
+  ## 6. ECB Compliance
+
+- Iceberg V2: format-version=2, merge-on-read, time-travel FOR VERSION AS OF
+- WORM: SQL DELETE blocked on audit.access_log + MinIO Object Lock COMPLIANCE 10y per SEC 17a-4(f)
+- Bitemporal: valid_from/valid_to + bitemporal_ts + is_current + hash_row for restatements
+- Tri-temporal: valid_time + transaction_time + corrections_log.reporting_time for late AnaCredit T+30
+- Puffin: bloom-filter on hash_row fpp=0.01, metrics=full, 100x point-lookup
+- Z-ORDER: rewrite_data_files sort_order=zorder(contract_id, valid_from)
+- Retention: min-snapshots-to-keep=2147483647, vacuum forbidden for reproducibility
+- Branching: Nessie main + bitemporal-dev, content-key=hash_row
+- Semantics: v_fact_iref_bird view mapping to BIRD/SDMX
+
+## 7. Proofs
+
+1. Table populated: SELECT count(*) FROM fact_iref_bitemporal
+2. WORM: DELETE FROM audit.access_log returns error
+3. Bitemporal history: SELECT * FROM fact_iref_bitemporal$history
+4. BSI unification: SELECT ref_area, SUM(amount) GROUP BY ref_area
+5. Time travel: SELECT * FROM fact_iref_bitemporal FOR VERSION AS OF <id>
+6. Data quality: SELECT * WHERE currency mismatch / invalid dates = 0 rows
+7. Branching: GET /api/v2/trees returns main and bitemporal-dev
+8. Properties: SHOW TBLPROPERTIES shows bloom-filter and min-snapshots
+9. Optimization: SELECT file_path FROM $files after Z-ORDER
+10. BIRD view: SELECT * FROM v_fact_iref_bird
+11. Late arrival: INSERT/SELECT FROM corrections_log
+
