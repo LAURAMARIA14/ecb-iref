@@ -5,3 +5,6 @@ data/gold/
 data/warehouse/
 __pycache__/
 .venv/
+.env
+
+
