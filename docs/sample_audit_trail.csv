@@ -1,2 +1,0 @@
-execution_id,ref_area,ref_period,idempotency_key,diff_pct,nessie_commit,valid_from,valid_to,system_from,system_to,is_current,operator,audit_table,created_at
-run_2026-09-30T10:50:55.132531+00:00,DE,2023-12,20b2c9a96ef2f1fe6571a533edf7897c3e342cd8e05e44bd50e35c3437359217,0.0,main@20b2c9a,2023-12-01,9999-12-31,2026-09-30T10:50:55.132531+00:00,9999-12-31T23:59:59Z,True,laura_maria,gold.audit_trail,2026-09-30T10:50:55.132531+00:00
