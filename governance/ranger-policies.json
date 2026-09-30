@@ -1,0 +1,18 @@
+{
+  "policies": [
+    {
+      "service": "trino",
+      "name": "iref-de-filter",
+      "resources": { "schema": ["iref"], "table": ["party_dim"] },
+      "rowFilter": "country = 'DE'",
+      "users": ["analyst_de"]
+    },
+    {
+      "service": "trino",
+      "name": "mask-counterparty",
+      "resources": { "column": ["counterparty_id"] },
+      "masking": "hash",
+      "users": ["analyst_junior"]
+    }
+  ]
+}
