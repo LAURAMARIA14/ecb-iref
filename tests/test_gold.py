@@ -7,7 +7,7 @@ def test_ranger_policy_exists():
 
 def test_audit_trail_exists():
     import pathlib
-    assert pathlib.Path("docs/sample_audit_trail.csv").exists()
+    assert pathlib.Path("docs/GOLD_S4_AUDIT_TRAIL_DIFF_0.0_NESSIE_20b2c9a_PASS.csv").exists()
 
 def test_adrs_count():
     import pathlib

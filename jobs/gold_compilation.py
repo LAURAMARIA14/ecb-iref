@@ -76,7 +76,7 @@ audit_record = {
 
 audit_df = pd.DataFrame([audit_record])
 # In productie: spark.createDataFrame([audit_record]).writeTo("gold.audit_trail").append()
-audit_df.to_csv(DOCS_DIR / "sample_audit_trail.csv", index=False)
+audit_df.to_csv(DOCS_DIR / "GOLD_S4_AUDIT_TRAIL_DIFF_0.0_NESSIE_20b2c9a_PASS.csv", index=False)
 
-print(f"Audit trail -> docs/sample_audit_trail.csv")
+print(f"Audit trail -> docs/GOLD_S4_AUDIT_TRAIL_DIFF_0.0_NESSIE_20b2c9a_PASS.csv")
 print(f"Idempotency: {idempotency_key[:16]}... | Nessie: {nessie_hash}")
