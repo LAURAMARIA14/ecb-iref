@@ -1,3 +1,5 @@
+[![CI](https://github.com/LAURAMARIA14/ecb-iref/actions/workflows/ci.yml/badge.svg)](https://github.com/LAURAMARIA14/ecb-iref/actions)
+
 ECB IReF L2 Pilot - DE.A20.S11 Vertical Slice | Medallion Lakehouse with LDM 3NF , Compilation & Revision Policy | Aligned to IReF Overview April 2024 (LDM Principles Ch2, Compilation Ch5.2)
 -Annex 1 to CBA Nov 2020 Figure A1.2 + Table A2.2
 
@@ -11,13 +13,18 @@ ECB IReF L2 Pilot - DE.A20.S11 Vertical Slice | Medallion Lakehouse with LDM 3NF
 
 ## 1. Architecture - Medallion (Bronze -> Silver -> Gold)
 
-- **01_bronze**: 
+- **01_bronze**:
+  
      - internal granular: Raw granular deposits DE.A20.S11 (CSV) immutable, source_hash SHA256(ref_area+ref_period) for idempotency.
      - external reference: ECB SDW BSI aggregates via SDMX 2.1 API (DSD ECB_BSI1) for BIRD plausability
--**02_silver**:
+       
+- **02_silver**:
+  
      - LDM 3NF: 4 core entities per Fig A1.2: party_dim (RIAD-aligned), instrument_fact, protection_dim, instrument_protection_link
      - National Extension: Scenario 2 (CBA Annex Table A2.2) common + de_specific (de_bauspar_indicator) replicable to FR/IT/ES without refactoring
--**03_gold**:
+       
+- **03_gold**:
+  
     - Compilation Layer: gold/compiled_bsi DE.A20 aggregated from granular + reconciliation BSI.A20 vs Derived <0.01% diff per BIRD plausability
     - Governance: Revision Policy via Nessie branch dev/2023-12 + full audit_trail
 
@@ -35,69 +42,84 @@ ECB IReF L2 Pilot - DE.A20.S11 Vertical Slice | Medallion Lakehouse with LDM 3NF
 - **Ingestion**: Internal granular CSV mock of SDMX 2.1 DSD ECB_BSI1 + External SDMX 2.1 API
 
 ## 3. How to start
-bash
-docker-compose up -d 
+```
+docker-compose up -d
+```
+
 # MinIO: http://localhost:9001 (admin/ admin12345)
 # Spark UI: http://localhost:8080
 # Airflow: http://localhost:8081 (airflow/ airflow)
 # Nessie: http://localhost:19120
 
-#1. Ingest internal granular CSV + external SDMX 2.1 BSI (ECB SDW live)
+#1. 
+- **Ingest internal granular CSV + external SDMX 2.1 BSI (ECB SDW live)**
+```
 python scripts/ingest_bronze.py --source internal --ref-period 2023-12
 python scripts/ingest_bronze.py --source external --dsi ECB_BSI1
+```
 
-#2. Validate Bronze->Silver LDM 3NF (4 tables per Fig A1.2) + National Extension
+#2.
+- **Validate Bronze->Silver LDM 3NF (4 tables per Fig A1.2) + National Extension**
+```
 spark-submit jobs/silver_validation.py --branch dev/2023-12
+```
 
-#3. Compile Gold + Reconciliation <0.01 vs SDMX BSI
+#3. 
+- **Compile Gold + Reconciliation <0.01 vs SDMX BSI**
+```
 spark-submit jobs/gold_compilation.py --check reconciliation_bsi.json
+```
 
 ## 4. Structure
+```
 .github/workflows -> CI/CD + data quality checks
 architecture -> C4 diagrams & ADRs (ADR-001 to ADR-005)
 dags -> Airflow DAGs with idempotency (SHA256) + Revision Policy
 data/
- 01_bronze/
-  internal/ -> raw granular DE.A20.S11 (CSV) immutable + source_hash
-  external/ -> BSI aggregates via SDMX 2.1 API (DSD ECB_BSI1) for reconciliation
-02_silver/
-  common/ -> party_dim (RIAD-aligned), instrument_fact, protection_dim, instrument_protection_link per IReF Overview p.34 Fig A1.2
-  de_specific/ -> de_bauspar_indicator per CBA Annex Table A2.2 Scenario 2 - replicable to FR/IT/ES without refactoring
-03_gold/
-  compiled_bsi/ -> DE.A20 aggregated from granular + BIRD plausability <0.01%
-  reconciliation_bsi.json
-  audit_trail.csv -> execution_id, ref_period, idempotency_key, nessie_commit, operator
-  governance -> data-quality (Great Expectation) & GDPR tagging
-  docs/ -> nessie log screenshot + IReF April 2024 refs
+  01_bronze/
+    internal/ -> raw granular DE.A20.S11 (CSV) immutable + source_hash
+    external/ -> BSI aggregates via SDMX 2.1 API (DSD ECB_BSI1) for reconciliation
+  02_silver/
+    common/ -> party_dim (RIAD-aligned), instrument_fact, protection_dim, instrument_protection_link per IReF Overview p.34 Fig A1.2
+    de_specific/ -> de_bauspar_indicator per CBA Annex Table A2.2 Scenario 2 - replicable to FR/IT/ES without refactoring
+  03_gold/
+    compiled_bsi/ -> DE.A20 aggregated from granular + BIRD plausibility <0.01%
+    reconciliation_bsi.json
+    audit_trail.csv -> execution_id, ref_period, idempotency_key, nessie_commit, operator
+governance -> data-quality (Great Expectation) & GDPR tagging
+docs/ -> nessie log screenshot + IReF April 2024 refs
+```
 
   ## 5. Key ADRs
 
-  ADR-001: Why Medallion + Iceberg? Auditability required by ECB + time-travel for Revision Policy.
-  ADR-002: Why MinIO local? Cost & GDPR -data stays in EU, S3-compatible.
-  ADR-003: Why 4 tables LDM not 2? Collateral required for PD/LGD per AnaCredit + IReF protection model  Fig A1.2 p.34
-  ADR-004: Why Idempotency? ECB Revision Policy Art 12 - prevent duplicate reporting on Airflow rerun - key: SHA256(ref_area+ref_period+source_hash)
-  ADR-005: Why protection_dim? Differentiator top 0.1% - 90% omit collateral but ECB requires it for analytical value + BSI plausability
+  - **ADR-001:** Why Medallion + Iceberg? Auditability required by ECB + time-travel for Revision Policy.
+  - **ADR-002:** Why MinIO local? Cost & GDPR -data stays in EU, S3-compatible.
+  - **ADR-003:** Why 4 tables LDM not 2? Collateral required for PD/LGD per AnaCredit + IReF protection model  Fig A1.2 p.34
+  - **ADR-004:** Why Idempotency? ECB Revision Policy Art 12 - prevent duplicate reporting on Airflow rerun - key: SHA256(ref_area+ref_period+source_hash)
+  - **ADR-005:** Why protection_dim? Differentiator top 0.1% - 90% omit collateral but ECB requires it for analytical value + BSI plausability
 
  ## 6. ECB Compliance
-Iceberg V2: format-version=2, merge-on-read, time-travel FOR VERSION AS OF
-WORM: SQL DELETE blocked on audit.access_log + MinIO Object Lock COMPLIANCE 10y per SEC 17a-4(f)
-Bitemporal: valid_from/valid_to + bitemporal_ts + is_current + hash_row for restatements
-Tri-temporal: valid_time + transaction_time + corrections_log.reporting_time for late AnaCredit T+30
-Puffin: bloom-filter on hash_row fpp=0.01, metrics=full, 100x point-lookup
-Z-ORDER: rewrite_data_files sort_order=zorder(contract_id, valid_from)
-Retention: min-snapshots-to-keep=2147483647, vacuum forbidden for reproducibility
-Branching: Nessie main + bitemporal-dev, content-key=hash_row
-Semantics: v_fact_iref_bird view mapping to BIRD/SDMX
+ 
+- **Iceberg V2:** format-version=2, merge-on-read, time-travel FOR VERSION AS OF
+- **WORM:** SQL DELETE blocked on audit.access_log + MinIO Object Lock COMPLIANCE 10y per SEC 17a-4(f)
+- **Bitemporal:** valid_from/valid_to + bitemporal_ts + is_current + hash_row for restatements
+- **Tri-temporal:** valid_time + transaction_time + corrections_log.reporting_time for late AnaCredit T+30
+- **Puffin:** bloom-filter on hash_row fpp=0.01, metrics=full, 100x point-lookup
+- **Z-ORDER:** rewrite_data_files sort_order=zorder(contract_id, valid_from)
+- **Retention:** min-snapshots-to-keep=2147483647, vacuum forbidden for reproducibility
+- **Branching:** Nessie main + bitemporal-dev, content-key=hash_row
+- **Semantics:** v_fact_iref_bird view mapping to BIRD/SDMX
 
 ## 7. Proofs
-Table populated: SELECT count(*) FROM fact_iref_bitemporal
-WORM: DELETE FROM audit.access_log returns error
-Bitemporal history: SELECT * FROM fact_iref_bitemporal$history
-BSI unification: SELECT ref_area, SUM(amount) GROUP BY ref_area
-Time travel: SELECT * FROM fact_iref_bitemporal FOR VERSION AS OF
-Data quality: SELECT * WHERE currency mismatch / invalid dates = 0 rows
-Branching: GET /api/v2/trees returns main and bitemporal-dev
-Properties: SHOW TBLPROPERTIES shows bloom-filter and min-snapshots
-Optimization: SELECT file_path FROM $files after Z-ORDER
-BIRD view: SELECT * FROM v_fact_iref_bird
-Late arrival: INSERT/SELECT FROM corrections_log
+
+- **Table populated:** SELECT count(*) FROM fact_iref_bitemporal
+- **WORM:** DELETE FROM audit.access_log returns error
+- **Bitemporal history:** SELECT * FROM fact_iref_bitemporal$history
+- **BSI unification:** SELECT ref_area, SUM(amount) GROUP BY ref_area
+- **Time travel:** SELECT * FROM fact_iref_bitemporal FOR VERSION AS OF
+- **Data quality:** SELECT * WHERE currency mismatch / invalid dates = 0 rows
+- **Branching:** GET /api/v2/trees returns main and bitemporal-dev
+- **Properties:** SHOW TBLPROPERTIES shows bloom-filter and min-snapshots
+- **Optimization:** SELECT file_path FROM $files after Z-ORDER
+- **BIRD view:** SELECT * FROM v_fact_iref_bird
+- **Late arrival:** INSERT/SELECT FROM corrections_log
