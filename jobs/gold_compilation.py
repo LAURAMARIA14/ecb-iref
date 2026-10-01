@@ -5,24 +5,16 @@ from datetime import datetime, timezone
 
 # --- BASE & PATHS (LDM S4 compliant) ---
 BASE = Path(__file__).resolve().parent.parent
-EXT_FILE = BASE / "data" / "minio" / "bronze" / "external" / "BSI_M_DE_A20_S11_2023-12.csv"
-INT_FILE = BASE / "data" / "minio" / "silver" / "reconciled" / "loans_2023-12.parquet"
-GOLD_DIR = BASE / "data" / "minio" / "gold" / "report"
+EXT_FILE = BASE / "data" / "bronze" / "external" / "BSI_M_DE_A20_S11_2023-12.csv"
+INT_FILE = BASE / "data" / "silver" / "reconciled" / "loans_2023-12.parquet"
+GOLD_DIR = BASE / "data" / "gold" / "report"
 DOCS_DIR = BASE / "docs"
 
-# WORM: creeaza structura, nu comite date reale in git
 GOLD_DIR.mkdir(parents=True, exist_ok=True)
 DOCS_DIR.mkdir(parents=True, exist_ok=True)
-EXT_FILE.parent.mkdir(parents=True, exist_ok=True)
-INT_FILE.parent.mkdir(parents=True, exist_ok=True)
 
-# FIX demo: daca ai sters minio, creeaza dummy ca sa nu pice
-if not EXT_FILE.exists():
-    EXT_FILE.write_text("PERIOD,AMOUNT\n2023-12,1000000\n")
-if not INT_FILE.exists():
-    pd.DataFrame([{"amount": 1000000, "ref_area": "DE", "ref_period": "2023-12"}]).to_parquet(INT_FILE)
 
-# --- 1. RECONCILIATION CORE (ce aveai tu) ---
+# --- 1. RECONCILIATION CORE --- 
 df_ext = pd.read_csv(EXT_FILE)
 raw_val = str(df_ext.iloc[-1, -1])
 real_value = float(raw_val.replace('"', '').replace("'", "").replace(",", "").strip())

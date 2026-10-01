@@ -2,8 +2,8 @@ from pathlib import Path
 import pandas as pd
 
 BASE = Path(__file__).resolve().parent.parent
-INT_FILE = BASE / "data" / "minio" / "bronze" / "internal" / "internal_loans_DE_S11_2023-12.csv"
-SILVER_DIR = BASE / "data" / "minio" / "silver" / "reconciled"
+INT_FILE = BASE / "data" / "bronze" / "internal" / "internal_loans_DE_S11_2023-12.csv"
+SILVER_DIR = BASE / "data" / "silver" / "reconciled"
 SILVER_DIR.mkdir(parents=True, exist_ok=True)
 
 df = pd.read_csv(INT_FILE)
