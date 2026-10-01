@@ -1,10 +1,8 @@
 data/minio/
-data/bronze/
-data/silver/
-data/gold/
-data/warehouse/
 __pycache__/
 .venv/
 .env
+**/*.parquet
+**/*.crc
 
 
