@@ -43,13 +43,14 @@ ECB IReF L2 Pilot - DE.A20.S11 Vertical Slice | Medallion Lakehouse with LDM 3NF
 
 ## 3. How to start
 ```
+cp .env.example .env
 docker-compose up -d
 ```
-
-# MinIO: http://localhost:9001 (admin/ admin12345)
-# Spark UI: http://localhost:8080
-# Airflow: http://localhost:8081 (airflow/ airflow)
-# Nessie: http://localhost:19120
+Services (local)
+- MinIO: http://localhost:9001 
+- Spark UI: http://localhost:8080
+- Airflow: http://localhost:8081 
+- Nessie: http://localhost:19120
 
 #1. 
 - **Ingest internal granular CSV + external SDMX 2.1 BSI (ECB SDW live)**
