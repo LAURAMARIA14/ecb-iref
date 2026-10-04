@@ -36,7 +36,7 @@ ECB IReF L2 Pilot - DE.A20.S11 Vertical Slice | Medallion Lakehouse with LDM 3NF
 - **Orchestration**: Apache Airflow (DAGs in /dags) + Revision Policy
 - **Catalog**: Postgres + Nessie (for Iceberg) - branch dev/2023-12
 - **Governance**: Data Quality (Great Expectations), GDPR tagging, Audit Trail
-- **Infra**: Docker Compose (local) | Prod roadmap:  Terraform +k8s
+- **Infrastructure**: Docker Compose (local) | Prod roadmap:  Terraform +k8s
 - **Reconciliation**: BIRD plausability BSI.A20 vs Gold compiled_bsi <0.01% diff + external SDMX 2.1 ECB_BSI1 (ECB SDW live)
 - **Idempotency**: SHA256(ref_area+ref_period+source_hash) per ECB Revision Policy Art 12 
 - **Ingestion**: Internal granular CSV mock of SDMX 2.1 DSD ECB_BSI1 + External SDMX 2.1 API
@@ -51,6 +51,8 @@ Services (local)
 - Spark UI: http://localhost:8080
 - Airflow: http://localhost:8081 
 - Nessie: http://localhost:19120
+
+  Production Scale: Project runs on mocked DE.A20.S11 (MB) to avoid TB storage costs. Architecture is TB-ready (Iceberg V2, Nessie S3-native, Z-ORDER, merge-on-read) - no refactoring needed for full AnaCredit/IReF feed. In production, storage is billed to client S3 , not project.
 
 #1. 
 - **Ingest internal granular CSV + external SDMX 2.1 BSI (ECB SDW live)**
