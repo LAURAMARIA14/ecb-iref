@@ -35,7 +35,7 @@ ECB IReF L2 Pilot - DE.A20.S11 Vertical Slice | Medallion Lakehouse with LDM 3NF
 - **Processing**: Apache Spark 3.5 (Bronze->Silver validation + Gold compilation)
 - **Orchestration**: Apache Airflow (DAGs in /dags) + Revision Policy
 - **Catalog**: Postgres + Nessie (for Iceberg) - branch dev/2023-12
-- **Governance**: Data Quality (Great Expectations), GDPR tagging, Audit Trail
+- **Governance**: Data Quality (Great Expectations pattern - asserts in mock, GE lib in production), GDPR tagging, Audit Trail
 - **Infrastructure**: Docker Compose (local) | Prod roadmap:  Terraform +k8s
 - **Reconciliation**: BIRD plausability BSI.A20 vs Gold compiled_bsi <0.01% diff + external SDMX 2.1 ECB_BSI1 (ECB SDW live)
 - **Idempotency**: SHA256(ref_area+ref_period+source_hash) per ECB Revision Policy Art 12 
