@@ -126,3 +126,7 @@ docs/ -> nessie log screenshot + IReF April 2024 refs
 - **Optimization:** SELECT file_path FROM $files after Z-ORDER
 - **BIRD view:** SELECT * FROM v_fact_iref_bird
 - **Late arrival:** INSERT/SELECT FROM corrections_log
+
+## 8. License 
+**Copyright 2026 LAURAMARIA14 - Licensed under Apache 2.0**
+This is an unofficial PoC. Architecture is *aligned* to ECB IReF public documentation (IReF Overview April 2024, CBA Annex Fig A1.2), but this is an **original implementation** built from scratch. 
