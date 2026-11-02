@@ -128,5 +128,6 @@ docs/ -> nessie log screenshot + IReF April 2024 refs
 - **Late arrival:** INSERT/SELECT FROM corrections_log
 
 ## 8. License 
-**Copyright 2026 LAURAMARIA14 - Licensed under Apache 2.0**
+**Copyright 2026 LAURAMARIA14 - All Rights Reserved**
 This is an unofficial PoC. Architecture is *aligned* to ECB IReF public documentation (IReF Overview April 2024, CBA Annex Fig A1.2), but this is an **original implementation** built from scratch. 
+This repository is Source-Available under the terms in LICENSE file - for recruitment and educational evaluation only. No commericial use without written permission.
